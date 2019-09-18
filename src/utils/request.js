@@ -1,5 +1,6 @@
 // 请求模块:封装了axios
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 
 // 创建axios实例
 // axios.create的作用是克隆一个axios实例,它的作用和axios一样的
@@ -11,6 +12,15 @@ import axios from 'axios'
 const request = axios.create({
   baseURL: '请求基准路由'
 })
+
+// 配置处理后端返回的数据包含超出JavaScript安全整数范围的问题
+request.defaults.transformRequest = [function (data) {
+  try {
+    return JSONbig.parse(data)
+  } catch (err) {
+    return data
+  }
+}]
 
 // 导出
 export default request
