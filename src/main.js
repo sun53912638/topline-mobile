@@ -3,6 +3,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import {// 按需注册vant组件
+  Button,
+  Cell,
+  CellGroup
+} from 'vant'
+Vue
+  .use(Button)
+  .use(Cell)
+  .use(CellGroup)
+
 Vue.config.productionTip = false
 
 new Vue({
