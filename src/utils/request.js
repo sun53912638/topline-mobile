@@ -8,13 +8,13 @@ import JSONbig from 'json-bigint'
 // http://api.a.com
 // http://api.b.com
 // 当然,不仅仅是这个baseURl,还有拦截器都可以互相独立
-
+// axios.defaults.withCredentials = true
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn'
 })
 
 // 配置处理后端返回的数据包含超出JavaScript安全整数范围的问题
-request.defaults.transformRequest = [function (data) {
+request.defaults.transformResponse = [function (data) {
   try {
     return JSONbig.parse(data)
   } catch (err) {
