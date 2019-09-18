@@ -10,7 +10,7 @@ import JSONbig from 'json-bigint'
 // 当然,不仅仅是这个baseURl,还有拦截器都可以互相独立
 
 const request = axios.create({
-  baseURL: '请求基准路由'
+  baseURL: 'http://ttapi.research.itcast.cn'
 })
 
 // 配置处理后端返回的数据包含超出JavaScript安全整数范围的问题
