@@ -51,8 +51,8 @@ export default {
     return {
       email: '123',
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810'
       },
       isLoginLoading: false // 防止用户频繁点击
     }
@@ -70,8 +70,8 @@ export default {
 
         // 验证通过提交表单
         this.isLoginLoading = true
-        const { data } = await login(this.user)
-        console.log(data)
+        const res = await login(this.user)
+        this.$store.commit('setUser', res.data.data)
         this.$toast.success('登陆成功')
       } catch (err) {
         if (err.response && err.response.status === 400) {
