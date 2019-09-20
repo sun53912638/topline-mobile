@@ -23,7 +23,8 @@ import {// 按需注册vant组件
   TabbarItem,
   Tab,
   Tabs,
-  List
+  List,
+  PullRefresh
 } from 'vant'
 
 Vue
@@ -39,6 +40,7 @@ Vue
   .use(Tab)
   .use(Tabs)
   .use(List)
+  .use(PullRefresh)
 
 // 配置表单验证插件
 // 配置使用中文语言
