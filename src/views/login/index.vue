@@ -80,6 +80,8 @@ export default {
       }
       this.isLoginLoading = false
     }
+  },
+  created () {
   }
 }
 </script>

@@ -1,6 +1,7 @@
 // 请求模块:封装了axios
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import store from '@/store'// 在非组件模块中访问store容器,谁用谁加载
 
 // 创建axios实例
 // axios.create的作用是克隆一个axios实例,它的作用和axios一样的
@@ -21,6 +22,30 @@ request.defaults.transformResponse = [function (data) {
     return data
   }
 }]
+
+// 请求拦截器
+request.interceptors.request.use(function (config) {
+  // 统一在请求头中添加数据
+  const { user } = store.state
+  if (user) {
+    config.headers.Authorization = `Bearer${user.token}`
+  }
+  return config
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error)
+})
+
+// Add a response interceptor
+request.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  return response
+}, function (error) {
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  return Promise.reject(error)
+})
 
 // 导出
 export default request
