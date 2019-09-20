@@ -18,7 +18,12 @@ import {// 按需注册vant组件
   NavBar,
   Field,
   Notify,
-  Toast
+  Toast,
+  Tabbar,
+  TabbarItem,
+  Tab,
+  Tabs,
+  List
 } from 'vant'
 
 Vue
@@ -29,6 +34,11 @@ Vue
   .use(Field)
   .use(Notify)
   .use(Toast)
+  .use(Tabbar)
+  .use(TabbarItem)
+  .use(Tab)
+  .use(Tabs)
+  .use(List)
 
 // 配置表单验证插件
 // 配置使用中文语言
