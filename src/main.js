@@ -30,7 +30,8 @@ import {// 按需注册vant组件
   GridItem,
   Image,
   Lazyload,
-  Popup
+  Popup,
+  Icon
 } from 'vant'
 
 // 为了方便的能在模板中使用relativeTime方法
@@ -57,6 +58,7 @@ Vue
   .use(Image)
   .use(Lazyload)
   .use(Popup)
+  .use(Icon)
 
 // 配置表单验证插件
 // 配置使用中文语言

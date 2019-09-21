@@ -26,11 +26,7 @@
                 <van-grid :border="false" :column-num="3">
                   <van-grid-item v-for="(img,index) in article.cover.images" :key="index">
                     <!-- vant 提供的一个显示图片组件 -->
-                    <van-image
-                      height="80"
-                      :src="img"
-                      lazy-load
-                    />
+                    <van-image height="80" :src="img" lazy-load />
                   </van-grid-item>
                 </van-grid>
                 <!-- /文章图片 -->
@@ -51,19 +47,24 @@
           <!-- /标签页的内容:频道的文章列表 -->
         </van-pull-refresh>
       </van-tab>
+
+      <!-- 面包按钮 -->
+      <div slot="nav-right" class="wap-nav" @click="isChannelEditShow = true">
+        <van-icon name="wap-nav" size="24" />
+      </div>
+      <!-- 面包按钮 -->
     </van-tabs>
     <!-- /频道列表 -->
 
     <!-- 编辑频道 -->
     <van-popup
-    v-model="isChannelEditShow"
-    position="bottom"
-    :style="{height:'95%'}"
-    closeable
-    close-icon-position="top-left"
-    round>
-      编辑频道
-    </van-popup>
+      v-model="isChannelEditShow"
+      position="bottom"
+      :style="{height:'95%'}"
+      closeable
+      close-icon-position="top-left"
+      round
+    >编辑频道</van-popup>
     <!-- /编辑频道 -->
   </div>
 </template>
@@ -77,7 +78,7 @@ export default {
     return {
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
-      isChannelEditShow: true// 控制编辑频道的显示和隐藏
+      isChannelEditShow: false // 控制编辑频道的显示和隐藏
     }
   },
   created () {
@@ -158,7 +159,7 @@ export default {
 <style lang="less" scoped>
 .home {
   .van-tabs {
-   /deep/.van-tabs__content {
+    /deep/.van-tabs__content {
       margin-bottom: 50px;
       margin-top: 90px;
     }
@@ -175,5 +176,13 @@ export default {
       margin-right: 10px;
     }
   }
+}
+.wap-nav {
+  position: sticky;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  opacity: 0.8;
 }
 </style>
