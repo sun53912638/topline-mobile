@@ -29,6 +29,7 @@
                     <van-image
                       height="80"
                       :src="img"
+                      lazy-load
                     />
                   </van-grid-item>
                 </van-grid>
