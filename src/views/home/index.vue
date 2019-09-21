@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- 导航栏 -->
-    <van-nav-bar title="首页" />
+    <van-nav-bar title="首页" fixed />
     <!-- /导航栏 -->
 
     <!-- 频道列表 -->
@@ -141,11 +141,19 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .home {
   .van-tabs {
-    .van-tabs__content {
-      padding-top: 50px;
+   /deep/.van-tabs__content {
+      margin-bottom: 50px;
+      margin-top: 90px;
+    }
+    /deep/.van-tabs__wrap {
+      position: fixed;
+      top: 46px;
+      z-index: 2;
+      left: 0;
+      right: 0;
     }
   }
   .article-info {
