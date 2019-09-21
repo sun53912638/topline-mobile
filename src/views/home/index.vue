@@ -7,29 +7,51 @@
     <!-- 频道列表 -->
     <van-tabs v-model="active">
       <van-tab v-for="channel in channels" :key="channel.id" :title="channel.name">
-        <!-- 标签页的内容:频道的文章列表 -->
-        <van-list
-          v-model="channel.loading"
-          :finished="channel.finished"
-          finished-text="没有更多了呦"
-          @load="onLoad"
-        >
-          <!-- 具体的内容 -->
-          <van-cell
-          v-for="article in channel.articles"
-           :key="article.art_id.toString()"
-           :title="article.title" />
-        </van-list>
-        <!-- /标签页的内容:频道的文章列表 -->
+        <van-pull-refresh v-model="channel.pullLoading" @refresh="onRefresh">
+          <!-- 标签页的内容:频道的文章列表 -->
+          <van-list
+            v-model="channel.loading"
+            :finished="channel.finished"
+            finished-text="没有更多了呦"
+            @load="onLoad"
+          >
+            <!-- 具体的内容 -->
+            <van-cell
+              v-for="article in channel.articles"
+              :key="article.art_id.toString()"
+              :title="article.title"
+            >
+              <div slot="label">
+                <!-- 文章图片 -->
+                <van-grid :border="false" :column-num="3">
+                  <van-grid-item v-for="(img,index) in article.cover.images" :key="index">
+                    <!-- vant 提供的一个显示图片组件 -->
+                    <van-image
+                      height="80"
+                      :src="img"
+                    />
+                  </van-grid-item>
+                </van-grid>
+                <!-- /文章图片 -->
+
+                <!-- 描述信息 -->
+                <div class="article-info">
+                  <div class="meta">
+                    <span>{{article.aut_name}}</span>
+                    <span>{{article.comm_count}}评论</span>
+                    <span>{{article.pubdate | relativeTime}}</span>
+                  </div>
+                </div>
+                <!-- /描述信息 -->
+              </div>
+            </van-cell>
+          </van-list>
+
+          <!-- /标签页的内容:频道的文章列表 -->
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
     <!-- /频道列表 -->
-
-    <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <p>刷新次数: {{ count }}</p>
-    </van-pull-refresh>
-    <!-- /下拉刷新 -->
   </div>
 </template>
 
@@ -41,10 +63,7 @@ export default {
   data () {
     return {
       active: 0, // 控制当前激活的标签页
-      channels: [], // 频道列表
-      //   下拉刷新
-      count: 0,
-      isLoading: false
+      channels: [] // 频道列表
     }
   },
   created () {
@@ -66,9 +85,11 @@ export default {
         channel.loading = false // 频道的上拉加载更多的loading状态
         channel.finished = false // 频道的加载结束的状态
         channel.timestamp = null // 用于获取下一页数据的时间戳(页码)
+        channel.pullLoading = false // 频道的下拉刷新loading状态
       })
       this.channels = data.data.channels
     },
+    // 上拉加载更多处理函数
     async onLoad () {
       // 请求加载文章列表
       const currentChannel = this.currentChannel
@@ -99,13 +120,22 @@ export default {
         currentChannel.timestamp = preTimestamp
       }
     },
-    onRefresh () {
-      // 下拉刷新的方法
-      setTimeout(() => {
-        this.$toast('刷新成功')
-        this.isLoading = false
-        this.count++
-      }, 500)
+    // 下拉刷新处理函数
+    async onRefresh () {
+      // 请求获取文章列表
+      const currentChannel = this.currentChannel
+      const { data } = await getArticles({
+        channelId: currentChannel.id,
+        // 第1页数据传递当前最新时间戳
+        // 下一页数据传递上一页返回数据结果中的pre_timestamp
+        timestamp: Date.now(),
+        withTop: 1
+      })
+      // 将数据添加到当前频道.article数据中心顶部
+      currentChannel.articles.unshift(...data.data.results)
+      // 关闭当前频道下拉舒心的loading
+      currentChannel.pullLoading = false
+      this.$toast('刷新成功')
     }
   }
 }
@@ -116,6 +146,11 @@ export default {
   .van-tabs {
     .van-tabs__content {
       padding-top: 50px;
+    }
+  }
+  .article-info {
+    .meta span {
+      margin-right: 10px;
     }
   }
 }

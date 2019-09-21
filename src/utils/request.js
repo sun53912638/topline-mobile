@@ -28,7 +28,7 @@ request.interceptors.request.use(function (config) {
   // 统一在请求头中添加数据
   const { user } = store.state
   if (user) {
-    config.headers.Authorization = `Bearer${user.token}`
+    config.headers.Authorization = `Bearer ${user.token}`// 要有空格
   }
   return config
 }, function (error) {

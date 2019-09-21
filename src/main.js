@@ -5,6 +5,7 @@ import store from './store'
 import './styles/index.less'
 import zhCN from 'vee-validate/dist/locale/zh_CN'
 import * as rules from 'vee-validate/dist/rules'
+import { relativeTime } from './utils/date'
 // 这种加载没有携带任何内置的验证规则
 // import { ValidationProvider, extend } from 'vee-validate'
 
@@ -24,8 +25,16 @@ import {// 按需注册vant组件
   Tab,
   Tabs,
   List,
-  PullRefresh
+  PullRefresh,
+  Grid,
+  GridItem,
+  Image
 } from 'vant'
+
+// 为了方便的能在模板中使用relativeTime方法
+// 所以这里将其注册为全局过滤器
+// 过滤器就是一个函数:接收一个参数,返回一个结果
+Vue.filter('relativeTime', relativeTime)
 
 Vue
   .use(Button)
@@ -41,6 +50,9 @@ Vue
   .use(Tabs)
   .use(List)
   .use(PullRefresh)
+  .use(Grid)
+  .use(GridItem)
+  .use(Image)
 
 // 配置表单验证插件
 // 配置使用中文语言

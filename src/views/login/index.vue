@@ -51,7 +51,7 @@ export default {
     return {
       email: '123',
       user: {
-        mobile: '13911111111',
+        mobile: '',
         code: '246810'
       },
       isLoginLoading: false // 防止用户频繁点击
