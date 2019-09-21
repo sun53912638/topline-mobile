@@ -53,6 +53,18 @@
       </van-tab>
     </van-tabs>
     <!-- /频道列表 -->
+
+    <!-- 编辑频道 -->
+    <van-popup
+    v-model="isChannelEditShow"
+    position="bottom"
+    :style="{height:'95%'}"
+    closeable
+    close-icon-position="top-left"
+    round>
+      编辑频道
+    </van-popup>
+    <!-- /编辑频道 -->
   </div>
 </template>
 
@@ -64,7 +76,8 @@ export default {
   data () {
     return {
       active: 0, // 控制当前激活的标签页
-      channels: [] // 频道列表
+      channels: [], // 频道列表
+      isChannelEditShow: true// 控制编辑频道的显示和隐藏
     }
   },
   created () {

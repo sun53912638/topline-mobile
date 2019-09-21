@@ -29,7 +29,8 @@ import {// 按需注册vant组件
   Grid,
   GridItem,
   Image,
-  Lazyload
+  Lazyload,
+  Popup
 } from 'vant'
 
 // 为了方便的能在模板中使用relativeTime方法
@@ -55,6 +56,7 @@ Vue
   .use(GridItem)
   .use(Image)
   .use(Lazyload)
+  .use(Popup)
 
 // 配置表单验证插件
 // 配置使用中文语言
