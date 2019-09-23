@@ -64,13 +64,40 @@
       closeable
       close-icon-position="top-left"
       round
-    >编辑频道</van-popup>
-    <!-- /编辑频道 -->
+    >
+      <!-- 我的频道 -->
+      <van-cell-group>
+        <van-cell title="我的频道">
+          <van-button type="danger" size="mini">编辑</van-button>
+        </van-cell>
+        <van-grid :gutter="10">
+          <van-grid-item
+          v-for="channel in channels"
+           :key="channel.id"
+           :text="channel.name" />
+        </van-grid>
+      </van-cell-group>
+      <!-- /我的频道 -->
+
+      <!-- 频道推荐 -->
+            <van-cell-group>
+        <van-cell title="频道推荐">
+        </van-cell>
+        <van-grid :gutter="10">
+          <van-grid-item
+          v-for="channel in remainingChannels"
+           :key="channel.id"
+           :text="channel.name" />
+        </van-grid>
+      </van-cell-group>
+      <!-- /频道推荐 -->
+    </van-popup>
+    <!-- /我的频道 -->
   </div>
 </template>
 
 <script>
-import { getUserOrDefaultChannels } from '@/api/channel'
+import { getUserOrDefaultChannels, getAllChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
 import { mapState } from 'vuex'
 import { getItem } from '@/utils/storage'
@@ -81,20 +108,37 @@ export default {
       ...mapState(['user']),
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
-      isChannelEditShow: false // 控制编辑频道的显示和隐藏
+      isChannelEditShow: false, // 控制编辑频道的显示和隐藏
+      allChannels: []
     }
   },
   created () {
+    this.loadUserChannels()
     this.loadAllChannels()
   },
   computed: {
     currentChannel () {
       // active是动态的,active改变也就意味着currentChannel也改变了
       return this.channels[this.active]
+    },
+    // 获取剩余频道,所有频道-我的频道
+    remainingChannels () {
+      // 剩余频道 = 所有频道-我的频道
+      const channels = []
+      this.allChannels.forEach(channel => {
+        // 如果我的频道不包含当前频道,那他就是剩余频道
+        // find方法遍历数组,查找满足条件的第一个元素,就返回该元素
+        // 如果知道遍历结束就返回undefined
+        const index = this.channels.findIndex(item => item.id === channel.id)
+        if (index === -1) {
+          channels.push(channel)
+        }
+      })
+      return channels
     }
   },
   methods: {
-    async loadAllChannels () {
+    async loadUserChannels () {
       // 有了频道这个业务
       let channels = []
       // 如果用户已经登录.则请求获取后端数据
@@ -169,6 +213,10 @@ export default {
       // 关闭当前频道下拉舒心的loading
       currentChannel.pullLoading = false
       this.$toast('刷新成功')
+    },
+    async loadAllChannels () {
+      const { data } = await getAllChannels()
+      this.allChannels = data.data.channels
     }
   }
 }
