@@ -75,11 +75,13 @@
         </van-cell>
         <van-grid :gutter="10" >
           <van-grid-item
-          v-for="channel in channels"
+          v-for="(channel, index) in channels"
            :key="channel.id"
            :text="channel.name"
+           @click="onUserChannelClick(channel,index)"
            >
            <van-icon
+           class="icon-close"
            v-show="isEdit"
            slot="icon"
            name="close"
@@ -107,7 +109,7 @@
            slot="icon"
            name="plus"
            color="pink"
-           size="16px"
+           size="18px"
            />
           </van-grid-item>
         </van-grid>
@@ -261,6 +263,19 @@ export default {
         // 未登录：本地存储
         setItem('channels', this.channels)
       }
+    },
+    // 我的频道点击处理函数
+    async onUserChannelClick (channel, index) {
+      // 如果是编辑状态,删除频道
+      if (this.isEdit) {
+        // 待会处理
+      } else {
+        // 如果是非编辑状态,则切换频道
+        // 让频道列表切换到点击的这个频道
+        this.active = index
+        // 关闭弹层
+        this.isChannelEditShow = false
+      }
     }
   }
 }
@@ -295,14 +310,14 @@ export default {
   background-color: #fff;
   opacity: 0.8;
 }
-.van-icon {
+.icon-close {
   position: absolute;
   top: -5px;
   right: -5px;
 }
 .icon-add {
   position: absolute;
-  top: 10px;
-  left: -5px;
+  top: 16px;
+  left: -1px;
 }
 </style>
