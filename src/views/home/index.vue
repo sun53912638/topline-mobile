@@ -61,39 +61,60 @@
       v-model="isChannelEditShow"
       position="bottom"
       :style="{height:'95%'}"
-      closeable
-      close-icon-position="top-left"
+
       round
     >
       <!-- 我的频道 -->
-      <van-cell-group>
-        <van-cell title="我的频道">
-          <van-button type="danger" size="mini">编辑</van-button>
+      <van-cell-group  :border="false">
+        <van-cell title="我的频道" :border="false">
+          <van-button
+           type="danger"
+           size="mini"
+           @click="isEdit = !isEdit"
+          >{{ isEdit ? '完成' : '编辑'}}</van-button>
         </van-cell>
-        <van-grid :gutter="10">
+        <van-grid :gutter="10" >
           <van-grid-item
           v-for="channel in channels"
            :key="channel.id"
-           :text="channel.name" />
+           :text="channel.name"
+           >
+           <van-icon
+           v-show="isEdit"
+           slot="icon"
+           name="close"
+           color="#6aa"
+           size="24px"
+           />
+          </van-grid-item>
         </van-grid>
       </van-cell-group>
       <!-- /我的频道 -->
 
       <!-- 频道推荐 -->
-            <van-cell-group>
-        <van-cell title="频道推荐">
+            <van-cell-group  :border="false">
+        <van-cell title="频道推荐"  :border="false">
         </van-cell>
         <van-grid :gutter="10">
           <van-grid-item
           v-for="channel in remainingChannels"
            :key="channel.id"
            :text="channel.name"
-           @click="onAddChannel(channel)" />
+           @click="onAddChannel(channel)">
+          <van-icon
+          class="icon-add"
+           v-show="isEdit"
+           slot="icon"
+           name="plus"
+           color="pink"
+           size="16px"
+           />
+          </van-grid-item>
         </van-grid>
       </van-cell-group>
       <!-- /频道推荐 -->
     </van-popup>
-    <!-- /我的频道 -->
+    <!-- /编辑频道 -->
   </div>
 </template>
 
@@ -109,8 +130,9 @@ export default {
     return {
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
-      isChannelEditShow: false, // 控制编辑频道的显示和隐藏
-      allChannels: []
+      isChannelEditShow: true, // 控制编辑频道的显示和隐藏
+      allChannels: [],
+      isEdit: false
     }
   },
   created () {
@@ -272,5 +294,15 @@ export default {
   align-items: center;
   background-color: #fff;
   opacity: 0.8;
+}
+.van-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+.icon-add {
+  position: absolute;
+  top: 10px;
+  left: -5px;
 }
 </style>
