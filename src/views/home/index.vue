@@ -98,10 +98,11 @@
 </template>
 
 <script>
-import { getUserOrDefaultChannels, getAllChannels } from '@/api/channel'
+import { getUserOrDefaultChannels, getAllChannels, resetUserChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
 import { mapState } from 'vuex'
 import { getItem, setItem } from '@/utils/storage'
+
 export default {
   name: 'HomeIndex',
   data () {
@@ -219,12 +220,21 @@ export default {
       const { data } = await getAllChannels()
       this.allChannels = data.data.channels
     },
-    onAddChannel (channel) {
+    async onAddChannel (channel) {
       this.channels.push(channel)
       // 持久化
       if (this.user) {
         // 已登录：请求保存到后端
-        console.log(this.user)
+        const channels = []
+        // 处理提取重置频道
+        // this.channels.slice(1)不包括第一个频道
+        this.channels.slice(1).forEach((item, index) => {
+          channels.push({
+            id: item.id,
+            seq: index + 2
+          })
+        })
+        await resetUserChannels(channels)
       } else {
         // 未登录：本地存储
         setItem('channels', this.channels)
