@@ -57,60 +57,50 @@
     <!-- /频道列表 -->
 
     <!-- 编辑频道 -->
-    <van-popup
-      v-model="isChannelEditShow"
-      position="bottom"
-      :style="{height:'95%'}"
-
-      round
-    >
+    <van-popup v-model="isChannelEditShow" position="bottom" :style="{height:'95%'}" round>
       <!-- 我的频道 -->
-      <van-cell-group  :border="false">
+      <van-cell-group :border="false">
         <van-cell title="我的频道" :border="false">
-          <van-button
-           type="danger"
-           size="mini"
-           @click="isEdit = !isEdit"
-          >{{ isEdit ? '完成' : '编辑'}}</van-button>
+          <van-button type="danger" size="mini" @click="isEdit = !isEdit">{{ isEdit ? '完成' : '编辑'}}</van-button>
         </van-cell>
-        <van-grid :gutter="10" >
+        <van-grid :gutter="10">
           <van-grid-item
-          v-for="(channel, index) in channels"
-           :key="channel.id"
-           :text="channel.name"
-           @click="onUserChannelClick(channel,index)"
-           >
-           <van-icon
-           class="icon-close"
-           v-show="isEdit"
-           slot="icon"
-           name="close"
-           color="#6aa"
-           size="24px"
-           />
+            v-for="(channel, index) in channels"
+            :key="channel.id"
+            :text="channel.name"
+            @click="onUserChannelClick(channel,index)"
+          >
+            <van-icon
+              class="icon-close"
+              v-show="isEdit"
+              slot="icon"
+              name="close"
+              color="#6aa"
+              size="24px"
+            />
           </van-grid-item>
         </van-grid>
       </van-cell-group>
       <!-- /我的频道 -->
 
       <!-- 频道推荐 -->
-            <van-cell-group  :border="false">
-        <van-cell title="频道推荐"  :border="false">
-        </van-cell>
+      <van-cell-group :border="false">
+        <van-cell title="频道推荐" :border="false"></van-cell>
         <van-grid :gutter="10">
           <van-grid-item
-          v-for="channel in remainingChannels"
-           :key="channel.id"
-           :text="channel.name"
-           @click="onAddChannel(channel)">
-          <van-icon
-          class="icon-add"
-           v-show="isEdit"
-           slot="icon"
-           name="plus"
-           color="pink"
-           size="18px"
-           />
+            v-for="channel in remainingChannels"
+            :key="channel.id"
+            :text="channel.name"
+            @click="onAddChannel(channel)"
+          >
+            <van-icon
+              class="icon-add"
+              v-show="isEdit"
+              slot="icon"
+              name="plus"
+              color="pink"
+              size="18px"
+            />
           </van-grid-item>
         </van-grid>
       </van-cell-group>
@@ -121,7 +111,12 @@
 </template>
 
 <script>
-import { getUserOrDefaultChannels, getAllChannels, resetUserChannels } from '@/api/channel'
+import {
+  getUserOrDefaultChannels,
+  getAllChannels,
+  resetUserChannels,
+  deleteUserChannels
+} from '@/api/channel'
 import { getArticles } from '@/api/article'
 import { mapState } from 'vuex'
 import { getItem, setItem } from '@/utils/storage'
@@ -268,7 +263,18 @@ export default {
     async onUserChannelClick (channel, index) {
       // 如果是编辑状态,删除频道
       if (this.isEdit) {
-        // 待会处理
+        // 编辑状态删除操作
+        this.channels.splice(index, 1)// 将数据从视图中移除
+        // 持久化
+        if (this.user) {
+          // 已登录,请求删除
+          await deleteUserChannels(channel.id)
+        } else {
+          // 未登录,删除本地存储
+          // 注意:本地存储中的数据无法像操作js数据成员一样来修改
+          // 如果想修改,则从新存储实现修改
+          setItem('channels', this.channels)
+        }
       } else {
         // 如果是非编辑状态,则切换频道
         // 让频道列表切换到点击的这个频道
