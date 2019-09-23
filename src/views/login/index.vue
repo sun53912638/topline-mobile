@@ -73,6 +73,7 @@ export default {
         const res = await login(this.user)
         this.$store.commit('setUser', res.data.data)
         this.$toast.success('登陆成功')
+        this.$router.push('/')
       } catch (err) {
         if (err.response && err.response.status === 400) {
           this.$toast.fail('登陆失败,用户名或密码错误')

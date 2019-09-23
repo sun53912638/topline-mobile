@@ -70,12 +70,15 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/channel'
+import { getUserOrDefaultChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   data () {
     return {
+      ...mapState(['user']),
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
       isChannelEditShow: false // 控制编辑频道的显示和隐藏
@@ -92,17 +95,32 @@ export default {
   },
   methods: {
     async loadAllChannels () {
-      const { data } = await getAllChannels()
+      // 有了频道这个业务
+      let channels = []
+      // 如果用户已经登录.则请求获取后端数据
+      if (this.user) {
+        const { data } = await getUserOrDefaultChannels()
+        channels = data.data.channels
+      } else {
+        // 用户没有登录,获取本地存储
+        const localChannels = getItem('channels')
+        if (localChannels) {
+          channels = localChannels
+        } else {
+          const { data } = await getUserOrDefaultChannels()
+          channels = data.data.channels
+        }
+      }
 
       //   定制频道的内容数据
-      data.data.channels.forEach(channel => {
+      channels.forEach(channel => {
         channel.articles = [] // 频道的文章列表
         channel.loading = false // 频道的上拉加载更多的loading状态
         channel.finished = false // 频道的加载结束的状态
         channel.timestamp = null // 用于获取下一页数据的时间戳(页码)
         channel.pullLoading = false // 频道的下拉刷新loading状态
       })
-      this.channels = data.data.channels
+      this.channels = channels
     },
     // 上拉加载更多处理函数
     async onLoad () {
