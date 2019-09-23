@@ -87,7 +87,8 @@
           <van-grid-item
           v-for="channel in remainingChannels"
            :key="channel.id"
-           :text="channel.name" />
+           :text="channel.name"
+           @click="onAddChannel(channel)" />
         </van-grid>
       </van-cell-group>
       <!-- /频道推荐 -->
@@ -100,12 +101,11 @@
 import { getUserOrDefaultChannels, getAllChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
 import { mapState } from 'vuex'
-import { getItem } from '@/utils/storage'
+import { getItem, setItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   data () {
     return {
-      ...mapState(['user']),
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
       isChannelEditShow: false, // 控制编辑频道的显示和隐藏
@@ -117,6 +117,7 @@ export default {
     this.loadAllChannels()
   },
   computed: {
+    ...mapState(['user']),
     currentChannel () {
       // active是动态的,active改变也就意味着currentChannel也改变了
       return this.channels[this.active]
@@ -217,6 +218,17 @@ export default {
     async loadAllChannels () {
       const { data } = await getAllChannels()
       this.allChannels = data.data.channels
+    },
+    onAddChannel (channel) {
+      this.channels.push(channel)
+      // 持久化
+      if (this.user) {
+        // 已登录：请求保存到后端
+        console.log(this.user)
+      } else {
+        // 未登录：本地存储
+        setItem('channels', this.channels)
+      }
     }
   }
 }
