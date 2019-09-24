@@ -2,7 +2,7 @@
   <div class="search-result">
     <!-- 导航栏 -->
     <van-nav-bar
-        title="xxx的搜索结果"
+        :title="`${$route.params.q}`"
         left-arrow fixed
         @click-left="$router.back()"
      />
@@ -17,9 +17,9 @@
         @load="onload"
     >
     <van-cell
-        v-for="item in list"
-        :key="item"
-        :title="item"
+        v-for="article in list"
+        :key="article.art_id"
+        :title="article.title"
     />
     </van-list>
     <!-- /文章列表 -->
@@ -27,18 +27,44 @@
 </template>
 
 <script>
+import { getSearch } from '@/api/search'
+
 export default {
   name: 'SearchResult',
   data () {
     return {
       list: [],
       loading: false,
-      finished: false
+      finished: false,
+      page: 1
     }
   },
 
   methods: {
-    onload () {
+    async onload () {
+      // 1.请求获取数据
+      const { data } = await getSearch({
+        page: this.page, // 页码
+        perPage: 20, // 每页大小
+        q: this.$route.params.q
+      })
+
+      // 2.将请求结果保存到当前组件的list中
+      const { results } = data.data
+      this.list.push(...results)
+
+      // 3.关闭loading
+      this.loading = false
+
+      // 4.判断是否已经全部加载结束
+      if (results.length) {
+        // 如果有,更新页码
+        this.page++
+      } else {
+        // 如果没有数据了,则将finished设置为true,不再onLoad
+        this.finished = true
+      }
+
       // 异步更新数据
       setTimeout(() => {
         for (let i = 0; i < 10; i++) {
