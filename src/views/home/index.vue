@@ -1,7 +1,18 @@
 <template>
   <div class="home">
     <!-- 导航栏 -->
-    <van-nav-bar title="首页" fixed />
+    <van-nav-bar fixed >
+      <!-- 自定义标题内容 -->
+    <van-button
+    size="small"
+    round
+    style="width:100%"
+    slot="title"
+    color="linear-gradient(to right, #4bb0ff, #6149f6)"
+    >
+    搜索
+    </van-button>
+    </van-nav-bar>
     <!-- /导航栏 -->
 
     <!-- 频道列表 -->
@@ -127,7 +138,7 @@ export default {
     return {
       active: 0, // 控制当前激活的标签页
       channels: [], // 频道列表
-      isChannelEditShow: true, // 控制编辑频道的显示和隐藏
+      isChannelEditShow: false, // 控制编辑频道的显示和隐藏
       allChannels: [],
       isEdit: false
     }
