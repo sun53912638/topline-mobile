@@ -21,7 +21,8 @@
       :key="item"
       @click="onSearch(item)"
       >
-        <div slot="title" v-html="item"></div>
+        <div slot="title" v-html="highLight(item)"></div>
+        <!-- 不直接改变数据使高亮,利用函数 -->
       </van-cell>
     </van-cell-group>
 
@@ -57,7 +58,15 @@ export default {
 
   methods: {
     onSearch () {},
-    onCancel () {}
+    onCancel () {},
+    highLight (str) {
+      const searchText = this.searchText
+      // 根据用户输入的内容创建一个动态的正则表达式
+      const reg = new RegExp(searchText, 'gi')
+      // searchText是用户输入的文字,使其高亮,对他进行全局匹配并忽略大小写
+      return str.replace(reg, `<span style="color:red;">${searchText}</span>`)
+      // 把匹配好的文字使其高亮红色,然后返回到HTML页面中,这样不影响数据本身
+    }
   },
 
   watch: {
