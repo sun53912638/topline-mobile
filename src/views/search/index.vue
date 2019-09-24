@@ -7,7 +7,7 @@
         placeholder="请输入搜索关键词"
         show-action
         shape="round"
-        @search="onSearch"
+        @search="onSearch(searchText)"
         @cancel="onCancel"
       />
     </form>
@@ -57,7 +57,18 @@ export default {
   },
 
   methods: {
-    onSearch () {},
+    onSearch (q) {
+      if (!q.trim().length) {
+        return
+      }
+
+      this.$router.push({
+        name: 'search-result',
+        params: {
+          q
+        }
+      })
+    },
     onCancel () {},
     highLight (str) {
       const searchText = this.searchText
