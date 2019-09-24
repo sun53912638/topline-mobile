@@ -191,11 +191,14 @@ export default {
 
       //   定制频道的内容数据
       channels.forEach(channel => {
-        channel.articles = [] // 频道的文章列表
-        channel.loading = false // 频道的上拉加载更多的loading状态
-        channel.finished = false // 频道的加载结束的状态
-        channel.timestamp = null // 用于获取下一页数据的时间戳(页码)
-        channel.pullLoading = false // 频道的下拉刷新loading状态
+        // channel.articles = [] // 频道的文章列表
+        // channel.loading = false // 频道的上拉加载更多的loading状态
+        // channel.finished = false // 频道的加载结束的状态
+        // channel.timestamp = null // 用于获取下一页数据的时间戳(页码)
+        // channel.pullLoading = false // 频道的下拉刷新loading状态
+        const extendData = this.extendChannelData()
+        // 把extendData合并到channel中
+        Object.assign(channel, extendData)
       })
       this.channels = channels
     },
@@ -249,7 +252,13 @@ export default {
     },
     async loadAllChannels () {
       const { data } = await getAllChannels()
-      this.allChannels = data.data.channels
+      const channels = data.data.channels
+      channels.forEach(channel => {
+        const extendData = this.extendChannelData()
+        // 把extenData合并到channel中
+        Object.assign(channel, extendData)
+      })
+      this.allChannels = channels
     },
     async onAddChannel (channel) {
       this.channels.push(channel)
@@ -293,6 +302,16 @@ export default {
         this.active = index
         // 关闭弹层
         this.isChannelEditShow = false
+      }
+    },
+    // 自定义扩展频道数据
+    extendChannelData () {
+      return {
+        articles: [],
+        loading: false,
+        finished: false,
+        timestamp: null,
+        pullLoading: false
       }
     }
   }
