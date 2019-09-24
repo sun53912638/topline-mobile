@@ -8,6 +8,7 @@
     round
     style="width:100%"
     slot="title"
+    @click="$router.push('/search')"
     color="linear-gradient(to right, #4bb0ff, #6149f6)"
     >
     搜索
