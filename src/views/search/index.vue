@@ -14,7 +14,7 @@
     <!-- /搜索框 -->
 
     <!-- 联想建议 -->
-    <van-cell-group>
+    <van-cell-group v-if="searchText">
       <van-cell
       icon="search"
       v-for="item in suggestions"
@@ -29,7 +29,7 @@
     <!-- /联想建议 -->
 
     <!-- 历史记录 -->
-    <van-cell-group>
+    <van-cell-group v-else>
       <van-cell title="历史记录">
         <template v-if="isDeleteShow">
           <span
