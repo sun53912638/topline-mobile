@@ -8,7 +8,7 @@
         show-action
         shape="round"
         @search="onSearch(searchText)"
-        @cancel="onCancel"
+        @cancel="$router.back()"
       />
     </form>
     <!-- /搜索框 -->
@@ -31,12 +31,32 @@
     <!-- 历史记录 -->
     <van-cell-group>
       <van-cell title="历史记录">
-        <span style="margin-right: 10px">全部删除</span>
-        <span>完成</span>
-        <van-icon slot="right-icon" name="delete" style="line-height: inherit;" />
+        <template v-if="isDeleteShow">
+          <span
+           style="margin-right: 10px"
+          @click="searchHistories = []"
+          >全部删除</span>
+        <span @click="isDeleteShow = false" >完成</span>
+        </template>
+        <van-icon
+        v-else
+        slot="right-icon"
+         name="delete"
+         style="line-height: inherit;"
+         @click="isDeleteShow = true"
+         />
       </van-cell>
-      <van-cell title="hello" v-for="value in 5" :key="value">
-        <van-icon slot="right-icon" name="close" style="line-height: inherit;" />
+      <van-cell
+      :title="item"
+      v-for="(item,index) in searchHistories"
+      :key="item">
+        <van-icon
+        slot="right-icon"
+         name="close"
+         style="line-height: inherit;"
+         v-show="isDeleteShow"
+         @click="searchHistories.splice(index,1)"
+         />
       </van-cell>
     </van-cell-group>
     <!-- 历史记录 -->
@@ -45,6 +65,7 @@
 
 <script>
 import { getSearchSuggestions } from '@/api/search'
+import { getItem, setItem } from '@/utils/storage'
 
 export default {
   name: 'searchText',
@@ -52,7 +73,9 @@ export default {
   data () {
     return {
       searchText: '',
-      suggestions: []
+      suggestions: [],
+      searchHistories: getItem('search-histories') || [], // 搜索历史记录
+      isDeleteShow: false
     }
   },
 
@@ -61,6 +84,31 @@ export default {
       if (!q.trim().length) {
         return
       }
+
+      // 记录历史记录
+      const searchHistories = this.searchHistories
+      const index = searchHistories.findIndex(item => {
+        // 忽略空格、大小写
+
+        return item.trim().toLowerCase() === q.trim().toLowerCase()
+      })
+
+      // 如果已存在，则将其移除
+      if (index !== -1) {
+        searchHistories.splice(index, 1)
+      }
+
+      // 将最新搜索记录保存到最前面
+      searchHistories.unshift(q)
+
+      // 监视不是立即发生的,起码等着当前函数执行完
+      // 它才会去判定数据到底有没有改变
+      // 虽然我们通过监视数据改变的方式处理数据的持久化
+      // 但是这里还要手动的来存储这个数据,因为后面的代码会发生页面跳转
+      // 页面跳转的时候会先销毁当前的页面(事件\watch\生命周期...都被干掉了),然后再加载新的页面
+
+      // 为了防止页面刷新数据丢失,将修改之后的数据保存到本地存储
+      setItem('search-histories', searchHistories)
 
       this.$router.push({
         name: 'search-result',
@@ -92,6 +140,11 @@ export default {
       const { data } = await getSearchSuggestions(newValue)
       console.log(data)
       this.suggestions = data.data.options
+    },
+
+    searchHistories (newValue) {
+      // 当数据发生改变,重新保存到本地存储
+      setItem('search-histories', newValue)
     }
   }
 }
