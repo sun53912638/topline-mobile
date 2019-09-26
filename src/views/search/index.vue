@@ -49,7 +49,9 @@
       <van-cell
       :title="item"
       v-for="(item,index) in searchHistories"
-      :key="item">
+      :key="item"
+      @click="onSearch(item)"
+      >
         <van-icon
         slot="right-icon"
          name="close"
