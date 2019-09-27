@@ -68,6 +68,7 @@
 <script>
 import { getSearchSuggestions } from '@/api/search'
 import { getItem, setItem } from '@/utils/storage'
+import { debounce } from 'lodash'
 
 export default {
   name: 'searchText',
@@ -132,7 +133,7 @@ export default {
 
   watch: {
     // 封装接口,监视搜索文本的变化 -> 发送请求 -> 获取结果 -> 将结果绑定到数据 -> 模板绑定
-    async searchText (newValue) {
+    searchText: debounce(async function (newValue) {
       // 校验非空
       if (!newValue.length) {
         return
@@ -142,7 +143,7 @@ export default {
       const { data } = await getSearchSuggestions(newValue)
       console.log(data)
       this.suggestions = data.data.options
-    },
+    }, 1000),
 
     searchHistories (newValue) {
       // 当数据发生改变,重新保存到本地存储
