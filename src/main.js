@@ -32,7 +32,8 @@ import {// 按需注册vant组件
   Lazyload,
   Popup,
   Icon,
-  Search
+  Search,
+  Loading
 } from 'vant'
 
 // 为了方便的能在模板中使用relativeTime方法
@@ -61,6 +62,7 @@ Vue
   .use(Popup)
   .use(Icon)
   .use(Search)
+  .use(Loading)
 
 // 配置表单验证插件
 // 配置使用中文语言

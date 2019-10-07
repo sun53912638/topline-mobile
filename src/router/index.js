@@ -5,6 +5,7 @@ import Tabbar from '@/views/tabbar'
 import Home from '@/views/home'
 import Search from '@/views/search'
 import SearchResult from '@/views/search-result'
+import Article from '@/views/article'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ const router = new VueRouter({
       name: 'search-result',
       path: '/search/:q',
       component: SearchResult
+    },
+    {
+      name: 'article',
+      path: '/article:articleID',
+      component: Article
     },
     {
       // name: 'tabbar',//嵌套路由如果有默认子路由则不要name

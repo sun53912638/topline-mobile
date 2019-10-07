@@ -20,6 +20,12 @@
         v-for="article in list"
         :key="article.art_id.toString()"
         :title="article.title"
+        @click="$router.push({
+          name:'article',
+          params:{
+            articleId:article.art_id.toString()
+          }
+        })"
     />
     </van-list>
     <!-- /文章列表 -->

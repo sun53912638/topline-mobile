@@ -57,7 +57,7 @@
          name="close"
          style="line-height: inherit;"
          v-show="isDeleteShow"
-         @click="searchHistories.splice(index,1)"
+         @click.stop="searchHistories.splice(index,1)"
          />
       </van-cell>
     </van-cell-group>
