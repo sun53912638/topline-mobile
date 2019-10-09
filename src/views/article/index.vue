@@ -1,7 +1,7 @@
 <template>
   <div class="article-container">
     <van-nav-bar fixed left-arrow @click-left="$router.back()" title="文章详情"></van-nav-bar>
-    <van-loading class="article-loading" v-if="loading"/>
+    <van-loading class="article-loading" v-if="loading" />
     <div class="detail">
       <h3 class="title">{{article.title}}</h3>
       <div class="author">
@@ -11,24 +11,32 @@
           <p class="time">{{article.pubdate | relativeTime}}</p>
         </div>
         <van-button
-        round
-        size="small"
-        :type="article.is_followed ? 'default' : 'info'"
-        @click="onFollow"
+          round
+          size="small"
+          :type="article.is_followed ? 'default' : 'info'"
+          @click="onFollow"
         >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
       </div>
       <div class="content" v-html="article.content"></div>
       <div class="zan">
         <van-button
-         round
-         size="small"
-         hairline
-         :type="article.attitude === 1 ? 'default' : 'primary'"
+          round
+          size="small"
+          hairline
+          :type="article.attitude === 1 ? 'default' : 'primary'"
           plain
           icon="good-job-o"
           @click="onLike"
-          >{{ article.attitude === 1 ? '取消点赞' : '+ 点赞' }}</van-button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
+        >{{ article.attitude === 1 ? '取消点赞' : '+ 点赞' }}</van-button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <van-button
+        round
+        size="small"
+        hairline
+        :type="article.attitude === 0 ? 'danger' : 'default'"
+        plain
+        icon="delete"
+        @click="dislikeArticle"
+        >{{ article.attitude === 0 ? '取消不喜欢' : '+ 不喜欢' }}</van-button>
       </div>
     </div>
     <div class="error">
@@ -46,7 +54,9 @@ import {
   floolwUser,
   unFollowUser,
   likeArticle,
-  unLikeArticle
+  unLikeArticle,
+  addDislike,
+  DelDislike
 } from '@/api/article'
 
 export default {
@@ -63,6 +73,20 @@ export default {
   },
 
   methods: {
+    dislikeArticle () { // 不喜欢文章
+      const { attitude } = this.article
+      const articleId = this.article.aut_id.toString()
+
+      if (attitude === 0) {
+        // 不喜欢,取消不喜欢
+        DelDislike(articleId)
+        this.article.attitude = -1
+      } else {
+        // 没有不喜欢,去不喜欢
+        addDislike(articleId)
+        this.article.attitude = 0
+      }
+    },
     onLike () {
       const { attitude } = this.article
       const articleId = this.article.aut_id.toString()

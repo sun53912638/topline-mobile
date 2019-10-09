@@ -63,3 +63,22 @@ export const unLikeArticle = articleId => {
     url: `/app/v1_0/article/likings/${articleId}`
   })
 }
+
+// 对文章不喜欢
+export const addDislike = articleId => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/article/dislikes',
+    data: {
+      target: articleId
+    }
+  })
+}
+
+// 取消对文章不喜欢
+export const DelDislike = articleId => {
+  return request({
+    method: 'DELETE',
+    url: `/app/v1_0/article/dislikes/${articleId}`
+  })
+}
