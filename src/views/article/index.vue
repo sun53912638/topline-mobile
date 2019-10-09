@@ -10,7 +10,12 @@
           <p class="name">{{article.aut_name}}</p>
           <p class="time">{{article.pubdate | relativeTime}}</p>
         </div>
-        <van-button round size="small" type="info">+ 关注</van-button>
+        <van-button
+        round
+        size="small"
+        :type="article.is_followed ? 'default' : 'info'"
+        @click="onFollow"
+        >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
       </div>
       <div class="content" v-html="article.content"></div>
       <div class="zan">
@@ -28,7 +33,7 @@
 </template>
 
 <script>
-import { getArticle } from '@/api/article'
+import { getArticle, floolwUser, unFollowUser } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -43,6 +48,21 @@ export default {
   },
 
   methods: {
+    onFollow () {
+      const { is_followed: isFollowed, aut_id: autId } = this.article
+      if (isFollowed) {
+        // 已关注,取消关注
+        unFollowUser(autId)
+        // this.article.is_Followed = false
+      } else {
+        // 没有关注,去关注
+        floolwUser(autId)
+        // this.article.is_followed = true
+      }
+
+      // 修改视图数据
+      this.article.is_followed = !isFollowed
+    },
     async loadArticle () {
       this.loading = true
       try {
