@@ -19,7 +19,15 @@
       </div>
       <div class="content" v-html="article.content"></div>
       <div class="zan">
-        <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <van-button
+         round
+         size="small"
+         hairline
+         :type="article.attitude === 1 ? 'default' : 'primary'"
+          plain
+          icon="good-job-o"
+          @click="onLike"
+          >{{ article.attitude === 1 ? '取消点赞' : '+ 点赞' }}</van-button>&nbsp;&nbsp;&nbsp;&nbsp;
         <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
       </div>
     </div>
@@ -33,7 +41,14 @@
 </template>
 
 <script>
-import { getArticle, floolwUser, unFollowUser } from '@/api/article'
+import {
+  getArticle,
+  floolwUser,
+  unFollowUser,
+  likeArticle,
+  unLikeArticle
+} from '@/api/article'
+
 export default {
   name: 'ArticleIndex',
   data () {
@@ -48,6 +63,20 @@ export default {
   },
 
   methods: {
+    onLike () {
+      const { attitude } = this.article
+      const articleId = this.article.aut_id.toString()
+
+      if (attitude === 1) {
+        // 已点赞,取消点赞
+        unLikeArticle(articleId)
+        this.article.attitude = -1
+      } else {
+        // 没有点赞,去点赞
+        likeArticle(articleId)
+        this.article.attitude = 1
+      }
+    },
     onFollow () {
       const { is_followed: isFollowed, aut_id: autId } = this.article
       if (isFollowed) {

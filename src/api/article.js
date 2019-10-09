@@ -44,3 +44,22 @@ export const unFollowUser = userId => {
     url: `/app/v1_0/user/followings/${userId}`
   })
 }
+
+// 对文章点赞
+export const likeArticle = articleId => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/article/likings',
+    data: {
+      target: articleId
+    }
+  })
+}
+
+// 取消文章点赞
+export const unLikeArticle = articleId => {
+  return request({
+    method: 'DELETE',
+    url: `/app/v1_0/article/likings/${articleId}`
+  })
+}
