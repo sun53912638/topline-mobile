@@ -38,6 +38,9 @@
         @click="dislikeArticle"
         >{{ article.attitude === 0 ? '取消不喜欢' : '+ 不喜欢' }}</van-button>
       </div>
+      <!-- 文章评论 -->
+      <article-comment/>
+      <!-- /文章评论 -->
     </div>
     <div class="error">
       <p>
@@ -59,8 +62,13 @@ import {
   DelDislike
 } from '@/api/article'
 
+import ArticleComment from './components/comment'
+
 export default {
   name: 'ArticleIndex',
+  components: {
+    ArticleComment
+  },
   data () {
     return {
       loading: true,
