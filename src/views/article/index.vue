@@ -29,25 +29,26 @@
           @click="onLike"
         >{{ article.attitude === 1 ? '取消点赞' : '+ 点赞' }}</van-button>&nbsp;&nbsp;&nbsp;&nbsp;
         <van-button
-        round
-        size="small"
-        hairline
-        :type="article.attitude === 0 ? 'danger' : 'default'"
-        plain
-        icon="delete"
-        @click="dislikeArticle"
+          round
+          size="small"
+          hairline
+          :type="article.attitude === 0 ? 'danger' : 'default'"
+          plain
+          icon="delete"
+          @click="dislikeArticle"
         >{{ article.attitude === 0 ? '取消不喜欢' : '+ 不喜欢' }}</van-button>
       </div>
-      <!-- 文章评论 -->
-      <article-comment/>
-      <!-- /文章评论 -->
     </div>
+        <!-- 文章评论 -->
+    <article-comment :article-id="$route.params.articleId"/>
+    <!-- /文章评论 -->
     <div class="error">
       <p>
         网络超时，点击
         <a href="#" @click.prevent="loadArticle">刷新</a> 试一试。
       </p>
     </div>
+
   </div>
 </template>
 
@@ -81,7 +82,8 @@ export default {
   },
 
   methods: {
-    dislikeArticle () { // 不喜欢文章
+    dislikeArticle () {
+      // 不喜欢文章
       const { attitude } = this.article
       const articleId = this.article.aut_id.toString()
 

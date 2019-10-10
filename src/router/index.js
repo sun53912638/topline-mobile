@@ -28,7 +28,7 @@ const router = new VueRouter({
     },
     {
       name: 'article',
-      path: '/article:articleID',
+      path: '/article/:articleId',
       component: Article
     },
     {
