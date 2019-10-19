@@ -1,6 +1,18 @@
 <template>
   <div class="article-comments">
-    <!-- 评论列表 -->
+      <!-- 关闭按钮 -->
+    <van-cell
+    icon="cross"
+    :border="false"
+    @click="isReplyShow = false"
+    title="xxx条回复"
+    />
+    <!-- /关闭按钮 -->
+
+    <!-- 当前评论 -->
+    <!-- /当前评论 -->
+
+    <!-- 评论的回复列表 -->
     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
       <van-cell v-for="comment in list" :key="comment.com_id.toString()" :title="comment.content">
         <van-image
@@ -19,16 +31,16 @@
             <van-button
             size="mini"
             type="default"
-            @click="onReplyShow(comment)"
+            @click="isReplyShow = true"
             >回复</van-button>
           </p>
         </div>
         <van-icon slot="right-icon" name="like-o" />
       </van-cell>
     </van-list>
-    <!-- 评论列表 -->
+    <!-- 评论的回复列表 -->
 
-    <!-- 发布评论 -->
+    <!-- 发布评论回复 -->
     <van-cell-group class="publish-wrap">
       <van-field
       clearable
@@ -43,33 +55,16 @@
         >发布</van-button>
       </van-field>
     </van-cell-group>
-    <!-- /发布评论 -->
-
-    <!-- 回复列表 -->
-    <van-popup
-      v-model="isReplyShow"
-      position="bottom"
-      :style="{ height: '95%' }"
-      round
-    >
-    <reply-list :comment="currentComment"/>
-    </van-popup>
-<!-- /回复列表 -->
-
+    <!-- /发布评论回复 -->
   </div>
 </template>
 
 <script>
 import { getComments, addComment } from '@/api/comment'
-import ReplyList from './reply-list'
 export default {
-  name: 'ArticleComment',
+  name: 'replylist',
 
-  props: ['articleId', 'commentId'],
-
-  components: {
-    ReplyList
-  },
+  props: ['articleId', 'comment'],
 
   data () {
     return {
@@ -79,20 +74,11 @@ export default {
       offset: null,
       limit: 10,
       commentText: '',
-      isReplyShow: false,
-      totalReplyCount: 0,
-      currentComment: {}// 当前点击回复的评论
+      isReplyShow: false
     }
   },
 
   methods: {
-
-    onReplyShow (comment) {
-      // 将点击回复存起来,通过prop传递给子组件
-      this.currentComment = comment
-      this.isReplyShow = true
-    },
-
     async onPublishComment () {
       // 非空校验
       const commentText = this.commentText.trim()
@@ -102,7 +88,7 @@ export default {
 
       // 清求添加评论
       const { data } = await addComment({
-        target: this.articleId, // 文章id
+        target: this.comment, // 文章id
         content: this.commentText // 评论内容
       })
 
@@ -116,8 +102,8 @@ export default {
     async onLoad () {
       // 1.请求获取评论数据
       const { data } = await getComments({
-        type: 'c', // 获取评论回复传c
-        source: this.articleId,
+        type: 'a',
+        source: this.comment.com_id.toString(), // 评论id
         offset: this.offset,
         limit: this.limit
       })

@@ -4,12 +4,12 @@
     <van-nav-bar fixed >
       <!-- 自定义标题内容 -->
     <van-button
-    size="small"
-    round
-    style="width:100%"
-    slot="title"
-    @click="$router.push('/search')"
-    color="linear-gradient(to right, #4bb0ff, #6149f6)"
+      size="small"
+      round
+      style="width:100%"
+      slot="title"
+      @click="$router.push('/search')"
+      color="linear-gradient(to right, #4bb0ff, #6149f6)"
     >
     搜索
     </van-button>
@@ -73,6 +73,7 @@
       <!-- 我的频道 -->
       <van-cell-group :border="false">
         <van-cell title="我的频道" :border="false">
+          <!-- 关闭按钮 -->
           <van-button type="danger" size="mini" @click="isEdit = !isEdit">{{ isEdit ? '完成' : '编辑'}}</van-button>
         </van-cell>
         <van-grid :gutter="10">
