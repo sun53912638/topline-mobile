@@ -1,12 +1,11 @@
 <template>
   <div class="article-comments">
       <!-- 关闭按钮 -->
-    <van-cell
-    icon="cross"
-    :border="false"
-    @click="isReplyShow = false"
+    <van-nav-bar
     :title="totalReplyCount + '条回复'"
-    />
+    >
+    <van-icon slot="left" name="cross" @click="$emit('close')" />
+</van-nav-bar>
     <!-- /关闭按钮 -->
 
     <!-- 当前评论 -->

@@ -55,6 +55,7 @@
     <reply-list
     :comment="currentComment"
     :article-id="articleId"
+    @close="isReplyShow = false"
     />
     </van-popup>
 <!-- /回复列表 -->
