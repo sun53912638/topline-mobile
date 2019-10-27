@@ -52,7 +52,10 @@
       :style="{ height: '95%' }"
       round
     >
-    <reply-list :comment="currentComment"/>
+    <reply-list
+    :comment="currentComment"
+    :article-id="articleId"
+    />
     </van-popup>
 <!-- /回复列表 -->
 
@@ -65,7 +68,7 @@ import ReplyList from './reply-list'
 export default {
   name: 'ArticleComment',
 
-  props: ['articleId', 'commentId'],
+  props: ['articleId'],
 
   components: {
     ReplyList

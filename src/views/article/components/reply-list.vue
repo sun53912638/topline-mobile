@@ -5,7 +5,7 @@
     icon="cross"
     :border="false"
     @click="isReplyShow = false"
-    title="xxx条回复"
+    :title="totalReplyCount + '条回复'"
     />
     <!-- /关闭按钮 -->
 
@@ -74,7 +74,8 @@ export default {
       offset: null,
       limit: 10,
       commentText: '',
-      isReplyShow: false
+      isReplyShow: false,
+      totalReplyCount: 0
     }
   },
 
@@ -88,8 +89,9 @@ export default {
 
       // 清求添加评论
       const { data } = await addComment({
-        target: this.comment, // 文章id
-        content: this.commentText // 评论内容
+        target: this.comment.com_id.toString(), // 评论id
+        content: this.commentText, // 评论内容
+        artId: this.articleId// 文章id
       })
 
       // 将最新的评论数据添加到列表顶部
@@ -97,6 +99,9 @@ export default {
 
       // 清空用户输入的文本框
       this.commentText = ''
+
+      // 更新总回复数量
+      this.totalReplyCount++
     },
 
     async onLoad () {
@@ -109,6 +114,8 @@ export default {
       })
       // 2.将数据添加到数组中
       this.list.push(...data.data.results)
+      // 更新总回复数量
+      this.totalReplyCount = data.data.total_count
       // 3.将loading设置为false
       this.loading = false
       // 4.判断数据是否已加载结束
